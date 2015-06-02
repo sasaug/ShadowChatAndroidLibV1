@@ -1,0 +1,97 @@
+package hook;
+
+option java_package = "com.shadowchat.storage";
+option java_outer_classname = "Store";
+
+enum MessageType {
+	SIMPLE = 1;
+	GALLERY = 2;
+	LIVEBOARD = 3;
+	NUDGE = 4;
+	JSON = 5;	
+	JOINGROUP = 6;
+	LEAVEGROUP = 7;
+}
+
+enum KeyStatus {
+	DISABLED = 1;
+	INACTIVE = 2;
+	PENDING = 3;
+	ACTIVE = 4;
+}
+
+message MessageEmoji{
+	required string tag = 1;
+	required string hash = 2;
+}
+
+message UserStatus{
+	required string username = 1;
+	required int32 status = 2;
+}
+
+message UserStats{
+	optional int64 lastOnline = 1;
+	optional int64 lastActivity = 2;
+	optional int32 unreadMessage = 3;
+}
+
+message KeyStore {
+	required bytes myPrivate = 1;
+	required bytes myPublic = 2;
+	optional bytes theirPublic = 3;
+	required KeyStatus status = 4;
+	required int64 timestamp = 5;
+	optional int32 tag = 6;
+}
+
+message KeyChainStore {
+	repeated KeyStore keys = 1;
+}
+
+message ChatDataStore {
+	repeated bytes queue = 1;
+	repeated int32 type = 2;
+}
+
+message Contact{
+	required string username = 1;
+	required string name = 2;
+	required string avatar = 3;
+	repeated string flag = 4;
+	repeated string keyHashes = 5;
+	optional int32 chatId = 10;
+	optional int32 friendStatus = 11;
+	optional UserStats stats = 12;
+	
+	required bool isGroup = 50;
+	repeated Contact users = 51;
+}
+
+message ContactsDataStore {
+	repeated Contact contacts = 1;
+	required int64 lastUpdate = 2;
+}
+
+message MessagesDataStore{
+	repeated bytes messages = 1;
+}
+
+message MessageData{
+	required MessageType type = 1;
+    required int32 id = 2;
+    required int64 timestamp = 3;
+    required string origin = 4;
+	required int32 status = 5;
+	repeated UserStatus userStatus = 6;
+	required bool incoming = 7;
+	optional string message = 10;
+	repeated MessageEmoji emoji = 11;
+	repeated string data = 12;
+}
+
+message KeyChainProtectedFileStore{
+	required string hash = 1;
+	required bytes content = 2;
+}
+
